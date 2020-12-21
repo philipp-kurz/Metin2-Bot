@@ -140,6 +140,23 @@ class Vision:
         return c
 
 
+    # given a list of [x, y, w, h] rectangles and a canvas image to draw on, return an image with
+    # all of those rectangles drawn
+    def draw_rectangles(self, haystack_img, rectangles):
+        # these colors are actually BGR
+        line_color = (0, 255, 0)
+        line_type = cv.LINE_4
+
+        for (x, y, w, h) in rectangles:
+            # determine the box positions
+            top_left = (x, y)
+            bottom_right = (x + w, y + h)
+            # draw the box
+            cv.rectangle(haystack_img, top_left, bottom_right, line_color, lineType=line_type)
+
+        return haystack_img
+
+
 def generate_negative_description_file():
     # open the output file for writing. will overwrite all existing data in there
     with open('neg.txt', 'w') as f:
@@ -147,4 +164,8 @@ def generate_negative_description_file():
         for filename in os.listdir('negative'):
             f.write('negative/' + filename + '\n')
 
-# C:\Users\Philipp\Development\OpenCV_CLI_Tools\opencv_annotation.exe --annotations=pos.txt --images=positive/
+
+# Training cascade classifier
+# C:/Users/Philipp/Development/OpenCV_CLI_Tools/opencv_annotation.exe --annotations=pos.txt --images=positive/
+# C:/Users/Philipp/Development/OpenCV_CLI_Tools/opencv_createsamples.exe -info pos.txt -w 24 -h 24 -num 1000 -vec pos.vec
+# C:/Users/Philipp/Development/OpenCV_CLI_Tools/opencv_traincascade.exe -data cascade/ -vec pos.vec -bg neg.txt -w 24 -h 24 -numPos 120 -numNeg 60 -numStages 10 -miniHitRate 0.5 -maxFalseAlarmRate 0.5
