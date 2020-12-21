@@ -128,8 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Custom
 .idea/
-*.bmp
-negative/
-positive/

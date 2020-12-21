@@ -1,9 +1,8 @@
 import pyautogui
-import win32gui, win32ui, win32con
+import win32gui
 from time import sleep
 import subprocess
 import pygetwindow as gw
-import numpy as np
 
 
 class Window:
@@ -16,21 +15,15 @@ class Window:
         self.gw_object = gw.getWindowsWithTitle(self.name)[0]
 
         rect = win32gui.GetWindowRect(self.hwnd)
-        border = 8
-        title_bar = 31
-        self.x = rect[0] + border
-        self.y = rect[1] + title_bar
-        self.width = rect[2] - self.x - border
-        self.height = rect[3] - self.y - border
-
-        self.cropped_x = border
-        self.cropped_y = title_bar
+        self.x = rect[0]
+        self.y = rect[1]
+        self.width = rect[2] - self.x
+        self.height = rect[3] - self.y
 
         win32gui.ShowWindow(self.hwnd, 5)
-        win32gui.SetForegroundWindow(self.hwnd)
-        # pyautogui.moveTo(self.x + 20, self.y + 5, duration=0.3)
-        # sleep(0.1)
-        # pyautogui.click()
+        pyautogui.moveTo(self.x + 20, self.y + 5, duration=0.3)
+        sleep(0.1)
+        pyautogui.click()
 
     def print_relative_mouse_pos(self, loop=False):
         repeat = True
@@ -48,36 +41,6 @@ class Window:
     def move_window(self, x, y):
         win32gui.MoveWindow(self.hwnd, x - 7, y, self.width, self.height, True)
         self.x, self.y = x, y
-
-    def capture(self):
-        # https://stackoverflow.com/questions/6312627/windows-7-how-to-bring-a-window-to-the-front-no-matter-what-other-window-has-fo
-        wDC = win32gui.GetWindowDC(self.hwnd)
-        dcObj = win32ui.CreateDCFromHandle(wDC)
-        cDC = dcObj.CreateCompatibleDC()
-        dataBitMap = win32ui.CreateBitmap()
-        dataBitMap.CreateCompatibleBitmap(dcObj, self.width, self.height)
-        cDC.SelectObject(dataBitMap)
-        cDC.BitBlt((0, 0), (self.width, self.height), dcObj, (self.cropped_x, self.cropped_y), win32con.SRCCOPY)
-        # dataBitMap.SaveBitmapFile(cDC, 'debug.bmp')
-
-        # https://stackoverflow.com/questions/41785831/how-to-optimize-conversion-from-pycbitmap-to-opencv-image
-        signedIntsArray = dataBitMap.GetBitmapBits(True)
-        img = np.fromstring(signedIntsArray, dtype='uint8')
-        img.shape = (self.height, self.width, 4)
-
-        # Free Resources
-        dcObj.DeleteDC()
-        cDC.DeleteDC()
-        win32gui.ReleaseDC(self.hwnd, wDC)
-        win32gui.DeleteObject(dataBitMap.GetHandle())
-
-        # Drop the alpha channel
-        img = img[..., :3]
-
-        # make image C_CONTIGUOUS
-        img = np.ascontiguousarray(img)
-
-        return img
 
 
 class MetinWindow(Window):
