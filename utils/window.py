@@ -1,6 +1,4 @@
-import ctypes
 import pyautogui
-import win32com.client
 import win32gui
 from time import sleep
 import subprocess
@@ -40,7 +38,6 @@ class Window:
     def move_window(self, x, y):
         win32gui.MoveWindow(self.hwnd, x - 7, y, self.width, self.height, True)
         self.x, self.y = x, y
-
 
 
 class MetinWindow(Window):
@@ -89,4 +86,3 @@ class OskWindow(Window):
             pyautogui.mouseDown(x=x, y=y, duration=0.2)
         elif mode == 'up':
             pyautogui.mouseUp(x=x, y=y)
-
