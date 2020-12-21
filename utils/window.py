@@ -2,6 +2,7 @@ import pyautogui
 import win32gui
 from time import sleep
 import subprocess
+import pygetwindow as gw
 
 
 class Window:
@@ -10,6 +11,8 @@ class Window:
         self.hwnd = win32gui.FindWindow(None, window_name)
         if self.hwnd == 0:
             raise Exception(f'Window "{self.name}" not found!')
+
+        self.gw_object = gw.getWindowsWithTitle(self.name)[0]
 
         rect = win32gui.GetWindowRect(self.hwnd)
         self.x = rect[0]
@@ -51,6 +54,9 @@ class OskWindow(Window):
             returned_value = subprocess.Popen('osk', shell=True)
             sleep(1)
         super().__init__(window_name)
+
+        self.width, self.height = 576, 173
+        self.gw_object.resizeTo(self.width, self.height)
 
         self.key_pos = {'space': (148, 155),    'Fn': (11, 150),    '1': (55, 61),      '2': (79, 67),
                         '3': (100, 65),         '4': (122, 59),     'z': (67, 132),     'e': (87, 87),
