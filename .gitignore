@@ -133,3 +133,5 @@ dmypy.json
 *.bmp
 negative/
 positive/
+cascade/
+*.vec
