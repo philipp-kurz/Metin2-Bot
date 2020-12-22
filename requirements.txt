@@ -12,3 +12,7 @@ PyTweening==1.0.3
 pywin32==227
 tqdm==4.54.1
 wincertstore==0.2
+
+opencv-python~=4.4.0.46
+numpy~=1.19.3
+pytesseract~=0.3.7

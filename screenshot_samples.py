@@ -13,16 +13,19 @@ def main():
     pyautogui.countdown(3)
     aeldra = MetinWindow('Aeldra')
     vision = Vision()
-    vision.init_control_gui()
-    smFilter = SnowManFilter()
+    # vision.init_control_gui()
+    sm_filter = SnowManFilter()
+
+    count = {'p': 0, 'n': 0}
 
     while True:
         loop_time = time.time()
         screenshot = aeldra.capture()
 
-        processed_screenshot = vision.apply_hsv_filter(screenshot)#, hsv_filter=smFilter)
+        processed_screenshot = vision.apply_hsv_filter(screenshot, hsv_filter=sm_filter)
+
         cv.imshow('Video Feed', processed_screenshot)
-        print(f'{round(1 / (time.time() - loop_time),2)} FPS')
+        # print(f'{round(1 / (time.time() - loop_time),2)} FPS')
 
         # press 'q' with the output window focused to exit.
         # waits 1 ms every loop to process key presses
@@ -31,9 +34,13 @@ def main():
             cv.destroyAllWindows()
             break
         elif key == ord('p'):
-            cv.imwrite('positive/{}.jpg'.format(int(loop_time)), processed_screenshot)
+            cv.imwrite('classifier/positive_2020_12_22_01/{}.jpg'.format(int(loop_time)), processed_screenshot)
+            count['p'] += 1
+            print(f'Saved positive sample. {count["p"]} total.')
         elif key == ord('n'):
-            cv.imwrite('negative/{}.jpg'.format(int(loop_time)), processed_screenshot)
+            cv.imwrite('classifier/negative_2020_12_22_01/{}.jpg'.format(int(loop_time)), processed_screenshot)
+            count['n'] += 1
+            print(f'Saved negative sample. {count["n"]} total.')
 
 
 if __name__ == '__main__':

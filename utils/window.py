@@ -32,16 +32,23 @@ class Window:
         # sleep(0.1)
         # pyautogui.click()
 
+    def get_relative_mouse_pos(self):
+        curr_x, curr_y = pyautogui.position()
+        return curr_x - self.x, curr_y - self.y
+
     def print_relative_mouse_pos(self, loop=False):
         repeat = True
         while repeat:
             repeat = loop
-            curr_x, curr_y = pyautogui.position()
-            print(curr_x - self.x, curr_y - self.y)
+            print(self.get_relative_mouse_pos)
             if loop:
                 sleep(1)
 
-    def window_click(self, x, y):
+    def mouse_move(self, x, y):
+        sleep(0.2)
+        pyautogui.moveTo(self.x + x, self.y + y, duration=0.3)
+
+    def mouse_click(self, x, y):
         sleep(0.2)
         pyautogui.click(self.x + x, self.y + y, duration=0.3)
 

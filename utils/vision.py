@@ -33,6 +33,20 @@ class SnowManFilter(HsvFilter):
         self.vSub = 0
 
 
+class MobInfoFilter(HsvFilter):
+    def __init__(self):
+        self.hMin = 0
+        self.sMin = 0
+        self.vMin = 0
+        self.hMax = 179
+        self.sMax = 25
+        self.vMax = 255
+        self.sAdd = 0
+        self.sSub = 0
+        self.vAdd = 0
+        self.vSub = 0
+
+
 class Vision:
     TRACKBAR_WINDOW = "Trackbars"
 
@@ -139,33 +153,36 @@ class Vision:
             c[c > lim] -= amount
         return c
 
+    def draw_marker(self, img, position, bgr_color=(255, 0, 0)):
+        cv.drawMarker(img, position, color=bgr_color, markerType=cv.MARKER_CROSS, thickness=2)
 
-    # given a list of [x, y, w, h] rectangles and a canvas image to draw on, return an image with
-    # all of those rectangles drawn
-    def draw_rectangles(self, haystack_img, rectangles):
-        # these colors are actually BGR
-        line_color = (0, 255, 0)
-        line_type = cv.LINE_4
-
+    def draw_rectangles(self, haystack_img, rectangles, bgr_color=(0, 255, 0)):
         for (x, y, w, h) in rectangles:
-            # determine the box positions
             top_left = (x, y)
             bottom_right = (x + w, y + h)
-            # draw the box
-            cv.rectangle(haystack_img, top_left, bottom_right, line_color, lineType=line_type)
-
-        return haystack_img
+            cv.rectangle(haystack_img, top_left, bottom_right, bgr_color, lineType=cv.LINE_4)
 
 
-def generate_negative_description_file():
-    # open the output file for writing. will overwrite all existing data in there
-    with open('neg.txt', 'w') as f:
-        # loop over all the filenames
-        for filename in os.listdir('negative'):
-            f.write('negative/' + filename + '\n')
+    def add_rectangles_to_image(self, image, rectangles):
+        if len(rectangles > 0):
+            image_with_matches = self.draw_rectangles(image, [rectangles[0]], bgr_color=(0, 0, 255))
+            if len(rectangles > 1):
+                image_with_matches = self.draw_rectangles(image, rectangles[1:])
+        return image
 
+    def black_out_area(self, image, top_left, bottom_right):
+        cv.rectangle(image, top_left, bottom_right, (0, 0, 0), cv.FILLED)
+        # cv.rectangle(image, top_left, bottom_right, (255, 0, 0), cv.LINE_4)
 
-# Training cascade classifier
-# C:/Users/Philipp/Development/OpenCV_CLI_Tools/opencv_annotation.exe --annotations=pos.txt --images=positive/
-# C:/Users/Philipp/Development/OpenCV_CLI_Tools/opencv_createsamples.exe -info pos.txt -w 24 -h 24 -num 1000 -vec pos.vec
-# C:/Users/Philipp/Development/OpenCV_CLI_Tools/opencv_traincascade.exe -data cascade/ -vec pos.vec -bg neg.txt -w 24 -h 24 -numPos 120 -numNeg 60 -numStages 10 -miniHitRate 0.5 -maxFalseAlarmRate 0.5
+    def extract_section(self, image, top_left, bottom_right):
+        return image[top_left[1] : bottom_right[1], top_left[0] : bottom_right[0]]
+
+    def template_match_alpha(self, haystack_img, needle_path):
+        needle = cv.imread(needle_path, cv.IMREAD_UNCHANGED)
+        result = cv.matchTemplate(haystack_img, needle[:, :, :3], cv.TM_SQDIFF, mask=needle[:, :, 3])
+        match_val, _, match_loc, _ = cv.minMaxLoc(result)
+        if match_val > 10_000:
+            return None
+        else:
+            return match_loc
+
