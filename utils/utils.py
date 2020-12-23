@@ -1,5 +1,11 @@
-def main():
-    pass
+import os
+import pyautogui
 
-if __name__ == '__main__':
-    main()
+def get_metin_needle_path():
+    return 'C:/Users/Philipp/Development/Metin2-Bot/utils/needle_metin.png'
+
+def get_tesseract_path():
+    return r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+def countdown():
+    pyautogui.countdown(3)

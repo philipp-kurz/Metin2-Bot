@@ -137,4 +137,5 @@ cascade/
 *.jpg
 backup/
 classifier/
+credentials.py
 
