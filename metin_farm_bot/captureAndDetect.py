@@ -7,7 +7,7 @@ import cv2 as cv
 
 class CaptureAndDetect:
 
-    DEBUG = True
+    DEBUG = False
 
     def __init__(self, metin_window, model_path):
         self.metin_window = metin_window
@@ -58,7 +58,7 @@ class CaptureAndDetect:
                 # Used to determine best match via scores
                 # best = detection['rectangles'][np.argmax(detection['scores'])]
                 detection['best_rectangle'] = best
-                detection['click_pos'] = int(best[0] + best[2] / 2), int(best[1] + best[3] / 2)
+                detection['click_pos'] = int(best[0] + best[2] / 2), int(best[1] + 0.66 * best[3])
                 self.vision.draw_rectangles(detection_image, detection['rectangles'])
                 self.vision.draw_rectangles(detection_image, [detection['best_rectangle']],
                                             bgr_color=(0, 0, 255))
@@ -89,7 +89,7 @@ class CaptureAndDetect:
         return screenshot, screenshot_time, detection, detection_time, detection_image
 
     def find_best_match(self, rectangles):
-        ideal_width = 120
+        ideal_width = 80
         diff = []
         for rectangle in rectangles:
             diff.append(abs(rectangle[2] - ideal_width))

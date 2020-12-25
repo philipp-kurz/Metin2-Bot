@@ -154,7 +154,7 @@ class Vision:
             c[c > lim] -= amount
         return c
 
-    def draw_marker(self, img, position, bgr_color=(255, 0, 0)):
+    def draw_marker(self, img, position, bgr_color=(0, 255, 0)):
         cv.drawMarker(img, position, color=bgr_color, markerType=cv.MARKER_CROSS, thickness=2)
 
     def draw_rectangles(self, haystack_img, rectangles, bgr_color=(0, 255, 0)):

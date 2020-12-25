@@ -46,14 +46,13 @@ class Window:
                 sleep(1)
 
     def mouse_move(self, x, y):
-        sleep(0.2)
-        pyautogui.moveTo(self.x + x, self.y + y, duration=0.3)
+        pyautogui.moveTo(self.x + x, self.y + y, duration=0.2)
 
     def mouse_click(self, x=None, y=None):
         sleep(0.2)
         if x is None and y is None:
             x, y = self.get_relative_mouse_pos()
-        pyautogui.click(self.x + x, self.y + y, duration=0.3)
+        pyautogui.click(self.x + x, self.y + y, duration=0.2)
 
     def move_window(self, x, y):
         win32gui.MoveWindow(self.hwnd, x - 7, y, self.width, self.height, True)
@@ -119,7 +118,7 @@ class OskWindow(Window):
         self.key_pos = {'space': (148, 155), 'Fn': (11, 150), '1': (55, 61), '2': (79, 67),
                         '3': (100, 65), '4': (122, 59), 'z': (67, 132), 'e': (87, 87),
                         'q': (40, 85), 'g': (134, 107), 't': (129, 86), 'Ctrl': (35, 150),
-                        'h': (159, 109),
+                        'h': (159, 109), 'r': (107, 88), 'f': (114, 109), 'b': (156, 134)
                         }
 
     def start_hitting(self):
@@ -133,6 +132,26 @@ class OskWindow(Window):
 
     def pick_up(self):
         self.press_key(button='z', mode='click', count=1)
+
+    def activate_tp_ring(self):
+        self.press_key(button='3', mode='click', count=1)
+
+    def send_mount_away(self):
+        self.press_key(button='Ctrl', mode='click')
+        sleep(0.2)
+        self.press_key(button='b', mode='click')
+
+    def call_mount(self):
+        self.press_key(button='Fn', mode='click')
+        sleep(0.2)
+        self.press_key(button='1', mode='click')
+
+    def recall_mount(self):
+        self.send_mount_away()
+        self.un_mount()
+        self.send_mount_away()
+        self.call_mount()
+        self.un_mount()
 
     def start_rotating_up(self):
         self.press_key(button='g', mode='down')
@@ -165,6 +184,18 @@ class OskWindow(Window):
 
     def activate_berserk(self):
         self.press_key(button='2', mode='click')
+
+    def start_zooming_out(self):
+        self.press_key(button='f', mode='down')
+
+    def stop_zooming_out(self):
+        self.press_key(button='f', mode='up')
+
+    def start_zooming_in(self):
+        self.press_key(button='r', mode='down')
+
+    def stop_zooming_in(self):
+        self.press_key(button='r', mode='up')
 
     def press_key(self, button, mode='click', count=1):
         x, y = self.x, self.y
