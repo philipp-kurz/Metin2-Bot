@@ -6,6 +6,8 @@ import pygetwindow as gw
 import numpy as np
 import  pythoncom
 
+# 1024 x 768
+
 
 class Window:
     def __init__(self, window_name):
@@ -46,13 +48,13 @@ class Window:
                 sleep(1)
 
     def mouse_move(self, x, y):
-        pyautogui.moveTo(self.x + x, self.y + y, duration=0.2)
+        pyautogui.moveTo(self.x + x, self.y + y, duration=0.1)
 
     def mouse_click(self, x=None, y=None):
         sleep(0.2)
         if x is None and y is None:
             x, y = self.get_relative_mouse_pos()
-        pyautogui.click(self.x + x, self.y + y, duration=0.2)
+        pyautogui.click(self.x + x, self.y + y, duration=0.1)
 
     def move_window(self, x, y):
         win32gui.MoveWindow(self.hwnd, x - 7, y, self.width, self.height, True)
@@ -102,7 +104,9 @@ class MetinWindow(Window):
         super().__init__(window_name)
 
     def activate(self):
-        self.mouse_click(40, -15)
+        self.mouse_move(40, -15)
+        sleep(0.1)
+        self.mouse_click()
 
 
 class OskWindow(Window):
@@ -204,12 +208,13 @@ class OskWindow(Window):
         else:
             x += self.key_pos[button][0]
             y += self.key_pos[button][1]
+            pyautogui.moveTo(x=x, y=y)
         if mode == 'click':
             for i in range(count):
-                pyautogui.mouseDown(x=x, y=y, duration=0.2)
+                pyautogui.mouseDown()
                 sleep(0.1)
                 pyautogui.mouseUp()
         elif mode == 'down':
-            pyautogui.mouseDown(x=x, y=y, duration=0.2)
+            pyautogui.mouseDown()
         elif mode == 'up':
-            pyautogui.mouseUp(x=x, y=y)
+            pyautogui.mouseUp()

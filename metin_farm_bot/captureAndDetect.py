@@ -9,14 +9,16 @@ class CaptureAndDetect:
 
     DEBUG = False
 
-    def __init__(self, metin_window, model_path):
+    def __init__(self, metin_window, model_path, hsv_filter):
         self.metin_window = metin_window
         self.vision = Vision()
-        self.snowman_hsv_filter = SnowManFilter()
+        self.snowman_hsv_filter = hsv_filter
         self.classifier = cv.CascadeClassifier(model_path)
 
         self.screenshot = None
         self.screenshot_time = None
+
+        self.processed_image = None
 
         self.detection = None
         self.detection_time = None
@@ -24,6 +26,7 @@ class CaptureAndDetect:
 
         self.stopped = False
         self.lock = Lock()
+        # self.vision.init_control_gui() # Uncomment do debug HSV filter
 
     def start(self):
         self.stopped = False
@@ -43,7 +46,7 @@ class CaptureAndDetect:
 
             # Preprocess image for object detection
             processed_img = self.vision.apply_hsv_filter(screenshot, hsv_filter=self.snowman_hsv_filter)
-            self.vision.black_out_area(processed_img, (441, 325), (581, 461))
+            self.vision.black_out_area(processed_img, (350, 271), (676, 461))
 
             # Detect objects
             output = self.classifier.detectMultiScale2(processed_img)
@@ -52,6 +55,7 @@ class CaptureAndDetect:
             detection_time = time.time()
             detection = None
             detection_image = screenshot.copy()
+
             if len(output[0]):
                 detection = {'rectangles': output[0], 'scores': output[1]}
                 best = self.find_best_match(detection['rectangles'])

@@ -1,2 +1,2 @@
 from .utils import *
-from .vision import Vision, SnowManFilter
+from .vision import Vision, SnowManFilter, SnowManFilterRedForest

@@ -33,6 +33,20 @@ class SnowManFilter(HsvFilter):
         self.vAdd = 255
         self.vSub = 0
 
+class SnowManFilterRedForest(HsvFilter):
+    # Night mode acitve
+    def __init__(self):
+        self.hMin = 130
+        self.sMin = 0
+        self.vMin = 0
+        self.hMax = 138
+        self.sMax = 255
+        self.vMax = 255
+        self.sAdd = 0
+        self.sSub = 0
+        self.vAdd = 255
+        self.vSub = 0
+
 
 class MobInfoFilter(HsvFilter):
     def __init__(self):
@@ -183,7 +197,7 @@ class Vision:
         result = cv.matchTemplate(haystack_img, needle[:, :, :3], cv.TM_SQDIFF, mask=needle[:, :, 3])
         match_val, _, match_loc, _ = cv.minMaxLoc(result)
         if match_val > 10_000:
-            return None
+            return None, match_val
         else:
-            return match_loc
+            return match_loc, match_val
 
