@@ -138,4 +138,5 @@ cascade/
 backup/
 classifier/
 credentials.py
+writeup/
 

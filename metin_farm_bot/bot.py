@@ -24,7 +24,7 @@ class BotState(enum.Enum):
     RESTART = 6
     ERROR = 100
     DEBUG = 101
-
+    
 
 class MetinFarmBot:
 
@@ -243,7 +243,6 @@ class MetinFarmBot:
         self.detection_result = result
         self.detection_time = result_time
         self.info_lock.release()
-
 
     def switch_state(self, state):
         self.state_lock.acquire()
